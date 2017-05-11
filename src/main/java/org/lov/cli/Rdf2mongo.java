@@ -60,6 +60,8 @@ public class Rdf2mongo extends CmdGeneral implements ICom {
 	private MongoCollection agentCollection;
 	private MongoCollection elementCollection;
 	private MongoCollection vocabCollection;
+	//atrillos
+	private String configFilePath;
 	
 	public Rdf2mongo(String[] args) {
 		super(args);
@@ -74,10 +76,12 @@ public class Rdf2mongo extends CmdGeneral implements ICom {
 
 	@Override
 	protected void processModulesAndArgs() {
-		if (getPositional().size() < 1) {
+		/*if (getPositional().size() < 1) {
 			doHelp();
 		}
-		String configFilePath = getPositionalArg(0);
+		String configFilePath = getPositionalArg(0);*/
+		//atrillos
+		configFilePath = "/root/Documents/LOV/lovScripts/lov.config";
 		//load properties from the config file
 		try {
 			lovConfig = new Properties();

@@ -40,6 +40,8 @@ public class ElasticsearchIndexLOV extends CmdGeneral {
 	private String hostName;
 	private String indexName;
 	private String lovDumpFile;
+	//atrillos
+	private String configFilePath;
 	
 	public ElasticsearchIndexLOV(String[] args) {
 		super(args);
@@ -54,10 +56,12 @@ public class ElasticsearchIndexLOV extends CmdGeneral {
 
 	@Override
 	protected void processModulesAndArgs() {
-		if (getPositional().size() < 1) {
+		/*if (getPositional().size() < 1) {
 			doHelp();
 		}
-		String configFilePath = getPositionalArg(0);
+		String configFilePath = getPositionalArg(0);*/
+		//atrillos
+		configFilePath = "/root/Documents/LOV/lovScripts/lov.config";
 		//load properties from the config file
 		try {
 			Properties lovConfig = new Properties();

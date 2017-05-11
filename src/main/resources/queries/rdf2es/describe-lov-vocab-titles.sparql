@@ -11,7 +11,7 @@ PREFIX vann: <http://purl.org/vocab/vann/>
 # ?title The vocabulary's title
 SELECT ?title{
   # Check only the LOV metadata graph
-  GRAPH <http://lov.okfn.org/dataset/lov> {
+  GRAPH <http://localhost:3333/dataset/lov> {
     ?vocab dct:title ?title .
   }
 }

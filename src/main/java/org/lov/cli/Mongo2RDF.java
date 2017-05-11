@@ -70,6 +70,8 @@ public class Mongo2RDF extends CmdGeneral {
 	private MongoCollection agentCollection;
 	private MongoCollection vocabCollection;
 	private MongoCollection elementCollection;
+	//atrillos
+	private String configFilePath;
 	
 	public Mongo2RDF(String[] args) {
 		super(args);
@@ -84,10 +86,12 @@ public class Mongo2RDF extends CmdGeneral {
 
 	@Override
 	protected void processModulesAndArgs() {
-		if (getPositional().size() < 1) {
+		/*if (getPositional().size() < 1) {
 			doHelp();
 		}
-		String configFilePath = getPositionalArg(0);
+		String configFilePath = getPositionalArg(0);*/
+		//atrillos
+		configFilePath = "/root/Documents/LOV/lovScripts/lov.config";
 		//load properties from the config file
 		try {
 			lovConfig = new Properties();

@@ -65,10 +65,12 @@ public class Stats extends CmdGeneral {
 
 	@Override
 	protected void processModulesAndArgs() {
-		if (getPositional().size() < 1) {
+		/*if (getPositional().size() < 1) {
 			doHelp();
 		}
-		configFilePath = getPositionalArg(0);
+		configFilePath = getPositionalArg(0);*/
+		//atrillos
+		configFilePath = "/root/Documents/LOV/lovScripts/lov.config";
 		//load properties from the config file
 		try {
 			Properties lovConfig = new Properties();

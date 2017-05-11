@@ -10,7 +10,7 @@ SELECT ?term ?vocab {
 
   # Find all vocabularies, with the attached
   # preferred namespace URI, from LOV metadata
-  GRAPH <http://lov.okfn.org/dataset/lov> {
+  GRAPH <http://localhost:3333/dataset/lov> {
     ?vocab a voaf:Vocabulary;
       vann:preferredNamespaceUri ?ns
   }
