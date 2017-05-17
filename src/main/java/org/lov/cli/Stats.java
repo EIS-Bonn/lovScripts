@@ -70,7 +70,7 @@ public class Stats extends CmdGeneral {
 		}
 		configFilePath = getPositionalArg(0);*/
 		//atrillos
-		configFilePath = "/root/Documents/LOV/lovScripts/lov.config";
+		configFilePath = configPath.configFilePath;
 		//load properties from the config file
 		try {
 			Properties lovConfig = new Properties();

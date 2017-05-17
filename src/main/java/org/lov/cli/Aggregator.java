@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -77,7 +78,7 @@ public class Aggregator extends CmdGeneral {
 		}
 		configFilePath = getPositionalArg(0);*/
 		//atrillos
-		configFilePath = "/root/Documents/LOV/lovScripts/lov.config";
+		configFilePath = configPath.configFilePath;
 	}
 
 	@Override

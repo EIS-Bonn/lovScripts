@@ -46,7 +46,8 @@ public class StatsOneVocab extends CmdGeneral {
 	public StatsOneVocab(String[] args) {
 		super(args);
 		getUsage().startCategory("Arguments");
-		getUsage().addUsage("configFilePath", "absolute path for the configuration file  (e.g. /home/...)");
+		//jtrillos
+		//getUsage().addUsage("configFilePath", "absolute path for the configuration file  (e.g. /home/...)");
 		getUsage().addUsage("vocabularyURI", "URI of the vocabulary as defined in LOV");
 	}
 	
@@ -57,16 +58,22 @@ public class StatsOneVocab extends CmdGeneral {
 	
 	@Override
 	protected String getSummary() {
-		return getCommandName() + " configFilePath (e.g. /home/...)";
+		//jtrillos
+		//return getCommandName() + " configFilePath (e.g. /home/...)";
+		return getCommandName() + "vocabularyURI";
 	}
 
 	@Override
 	protected void processModulesAndArgs() {
-		if (getPositional().size() < 2) {
+		//jtrillos
+		if (getPositional().size() < 1) {
 			doHelp();
 		}
-		configFilePath = getPositionalArg(0);
-		vocabularyURI = getPositionalArg(1);
+		//configFilePath = getPositionalArg(0);
+		vocabularyURI = getPositionalArg(0);
+		//jtrillos
+		configFilePath = configPath.configFilePath;
+		
 		//load properties from the config file
 		try {
 			Properties lovConfig = new Properties();

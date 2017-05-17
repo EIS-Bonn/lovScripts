@@ -81,7 +81,7 @@ public class Rdf2mongo extends CmdGeneral implements ICom {
 		}
 		String configFilePath = getPositionalArg(0);*/
 		//atrillos
-		configFilePath = "/root/Documents/LOV/lovScripts/lov.config";
+		configFilePath = configPath.configFilePath;
 		//load properties from the config file
 		try {
 			lovConfig = new Properties();

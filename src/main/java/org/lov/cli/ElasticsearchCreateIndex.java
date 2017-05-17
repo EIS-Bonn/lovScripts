@@ -30,6 +30,8 @@ public class ElasticsearchCreateIndex extends CmdGeneral {
 	private String clusterName;
 	private String hostName;
 	private String indexName;
+	//jtrillos
+		private String configFilePath;
 	
 	public ElasticsearchCreateIndex(String[] args) {
 		super(args);
@@ -44,10 +46,11 @@ public class ElasticsearchCreateIndex extends CmdGeneral {
 
 	@Override
 	protected void processModulesAndArgs() {
-		if (getPositional().size() < 1) {
+		/*if (getPositional().size() < 1) {
 			doHelp();
 		}
-		String configFilePath = getPositionalArg(0);
+		String configFilePath = getPositionalArg(0);*/
+		configFilePath = configPath.configFilePath;
 		//load properties from the config file
 		try {
 			Properties lovConfig = new Properties();

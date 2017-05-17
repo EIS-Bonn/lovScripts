@@ -33,8 +33,9 @@ public class Suggest extends CmdGeneral {
 	public Suggest(String[] args) {
 		super(args);
 		getUsage().startCategory("Arguments");
+		//jtrillos
 		getUsage().addUsage("vocabularyURI", "URI of the vocabulary (e.g. http://...)");
-		getUsage().addUsage("configFilePath", "absolute path for the configuration file  (e.g. /home/...)");
+		//getUsage().addUsage("configFilePath", "absolute path for the configuration file  (e.g. /home/...)");
 	}
 	
 	@Override
@@ -44,19 +45,24 @@ public class Suggest extends CmdGeneral {
 	
 	@Override
 	protected String getSummary() {
-		return getCommandName() + "vocabularyURI configFilePath";
+		//jtrillos
+		//return getCommandName() + "vocabularyURI configFilePath";
+		return getCommandName() + "vocabularyURI";
 	}
 
 	@Override
 	protected void processModulesAndArgs() {
-		if (getPositional().size() < 2) {
+		//jtrillos
+		if (getPositional().size() < 1) {
 			doHelp();
 		}
 		vocabularyURI = getPositionalArg(0);
+		
 		try {
 			lovConfig = new Properties();
-			File file = new File(getPositionalArg(1));
-			InputStream is = new FileInputStream(file);
+			//jtrillos
+			//File file = new File(getPositionalArg(1));
+			InputStream is = new FileInputStream(configPath.configFilePath);
 			lovConfig.load(is);			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
