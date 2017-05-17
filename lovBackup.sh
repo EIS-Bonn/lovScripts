@@ -47,7 +47,7 @@ DBHOST="127.0.0.1"
 DBPORT="27017"
 
 # Name of the specific database to backup
-DBNAME="lov"
+DBNAME="bdo"
 
 # Backup directory location e.g /backups
 BACKUPDIR="/usr/local/lov/backups"
