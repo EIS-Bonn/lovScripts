@@ -43,7 +43,7 @@ public class DownloadVersion extends CmdGeneral {
 		super(args);
 		getUsage().startCategory("Arguments");
 		getUsage().addUsage("vocabularyURI", "URI of the vocabulary (e.g. http://...)");
-		getUsage().addUsage("configFilePath", "absolute path for the configuration file  (e.g. /home/...)");
+		//getUsage().addUsage("configFilePath", "absolute path for the configuration file  (e.g. /home/...)");
 	}
 	
 	@Override
@@ -53,19 +53,22 @@ public class DownloadVersion extends CmdGeneral {
 	
 	@Override
 	protected String getSummary() {
-		return getCommandName() + "vocabularyURI configFilePath";
+		//Jtrillos
+		//return getCommandName() + "vocabularyURI configFilePath";
+		return getCommandName() + "vocabularyURI";
 	}
 
 	@Override
 	protected void processModulesAndArgs() {
-		if (getPositional().size() < 2) {
+		if (getPositional().size() < 1) {
 			doHelp();
 		}
 		vocabularyURI = getPositionalArg(0);
 		try {
 			lovConfig = new Properties();
-			File file = new File(getPositionalArg(1));
-			InputStream is = new FileInputStream(file);
+			//Jtrillos
+			//File file = new File(getPositionalArg(1));
+			InputStream is = new FileInputStream(configPath.configFilePath);
 			lovConfig.load(is);			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

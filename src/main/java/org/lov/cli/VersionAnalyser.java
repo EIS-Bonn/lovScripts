@@ -42,7 +42,7 @@ public class VersionAnalyser extends CmdGeneral {
 		getUsage().addUsage("versionURI", "URI of the version (e.g. http://...)");
 		getUsage().addUsage("vocabularyURI", "URI of the vocabulary (e.g. http://...)");
 		getUsage().addUsage("vocabularyNsp", "Namespace of the vocabulary (e.g. http://...)");
-		getUsage().addUsage("configFilePath", "absolute path for the configuration file  (e.g. /home/...)");
+		//getUsage().addUsage("configFilePath", "absolute path for the configuration file  (e.g. /home/...)");
 	}
 	
 	@Override
@@ -52,12 +52,14 @@ public class VersionAnalyser extends CmdGeneral {
 	
 	@Override
 	protected String getSummary() {
-		return getCommandName() + "versionURI vocabularyURI vocabularyNsp configFilePath";
+		//jtrillos
+		//return getCommandName() + "versionURI vocabularyURI vocabularyNsp configFilePath";
+		return getCommandName() + "versionURI vocabularyURI vocabularyNsp";
 	}
 
 	@Override
 	protected void processModulesAndArgs() {
-		if (getPositional().size() < 4) {
+		if (getPositional().size() < 3) {
 			doHelp();
 		}
 		versionURI = getPositionalArg(0);
@@ -65,8 +67,9 @@ public class VersionAnalyser extends CmdGeneral {
 		vocabularyNsp = getPositionalArg(2);
 		try {
 			lovConfig = new Properties();
-			File file = new File(getPositionalArg(3));
-			InputStream is = new FileInputStream(file);
+			//jtrillos
+			//File file = new File(getPositionalArg(3));
+			InputStream is = new FileInputStream(configPath.configFilePath);
 			lovConfig.load(is);			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
