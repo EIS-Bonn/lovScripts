@@ -38,7 +38,7 @@ public class LovConstants {
 	/* LOV Dataset */
 	public static String LOV_VOCABULARYSPACE ="bdo:LOV";
 	public static String LOV_FULL_VOCABULARYSPACE =NSP_LOV+"LOV";
-	public static String LOV_DATASET_URI ="http://lov.okfn.org/dataset/lov/lov.rdf";
+	public static String LOV_DATASET_URI ="http://localhost:3333/dataset/bdo/lov.rdf";
 	public static String LOV_BOT_URI = LOV_DATASET_URI+"#bot";
 	public static String LOV_BOT_NAME = "[Bot] automatic vocabulary analyzer";
 	
