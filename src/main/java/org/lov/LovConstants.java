@@ -16,7 +16,7 @@ public class LovConstants {
 	public static String NSP_FOAF="http://xmlns.com/foaf/0.1/";
 	public static String NSP_FRBR="http://purl.org/vocab/frbr/core#";
 	public static String NSP_LEXVO="http://lexvo.org/ontology#";
-	public static String NSP_LOV="http://lov.okfn.org/dataset/lov/";
+	public static String NSP_LOV="http://localhost:3333/dataset/bdo/";
 	public static String NSP_MOAT="http://moat-project.org/ns#";
 	public static String NSP_MREL="http://id.loc.gov/vocabulary/relators/";
 	public static String NSP_OWL="http://www.w3.org/2002/07/owl#";
@@ -36,7 +36,7 @@ public class LovConstants {
 	
 	
 	/* LOV Dataset */
-	public static String LOV_VOCABULARYSPACE ="lov:LOV";
+	public static String LOV_VOCABULARYSPACE ="bdo:LOV";
 	public static String LOV_FULL_VOCABULARYSPACE =NSP_LOV+"LOV";
 	public static String LOV_DATASET_URI ="http://lov.okfn.org/dataset/lov/lov.rdf";
 	public static String LOV_BOT_URI = LOV_DATASET_URI+"#bot";
@@ -239,7 +239,7 @@ public class LovConstants {
 	"PREFIX voaf:<"+LovConstants.NSP_VOAF+"> \n"+
 	"PREFIX frbr:<"+LovConstants.NSP_FRBR+"> \n"+
 	"PREFIX void:<"+LovConstants.NSP_VOID+"> \n"+
-	"PREFIX lov:<"+LovConstants.NSP_LOV+"> \n";
+	"PREFIX bdo:<"+LovConstants.NSP_LOV+"> \n";
 	
 	
 	public static Map<String, String> getPrefixes(){
@@ -249,7 +249,7 @@ public class LovConstants {
 		prefixes.put("rdfs", NSP_RDFS);
 		prefixes.put("rdf", NSP_RDF);
 		prefixes.put("foaf", NSP_FOAF);
-		prefixes.put("lov", NSP_LOV);
+		prefixes.put("bdo", NSP_LOV);
 		return prefixes;
 	}
 	
