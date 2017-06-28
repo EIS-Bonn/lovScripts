@@ -39,6 +39,8 @@ public class Stats extends CmdGeneral {
 	private String dbName;
 	private static MongoCollection vocabCollection;
 	private static MongoCollection langCollection;
+	//jtrillos
+	private static MongoCollection tagCollection;
 	private static Jongo jongo;
 	
 	public static void main(String... args) {
@@ -82,6 +84,8 @@ public class Stats extends CmdGeneral {
 			jongo = new Jongo(new MongoClient(hostName).getDB(dbName));
 			vocabCollection = jongo.getCollection("vocabularies");
 			langCollection = jongo.getCollection("languages");
+			//jtrillos
+			tagCollection = jongo.getCollection("stattags");
 			
 		} catch (FileNotFoundException e) {
 			log.error(e.getMessage());
@@ -110,7 +114,17 @@ public class Stats extends CmdGeneral {
 			for (Language lang : langs) {
 				langList.add(lang);
 			}
-		        log.info("language retrieved");	
+		    log.info("language retrieved");	
+		    
+		    //jtrillos
+			//get the list of statTags (Backup)
+			MongoCursor<StatTag> tags = tagCollection.find().as(StatTag.class);
+			List<StatTag> tagsList = new ArrayList<StatTag>();
+			for (StatTag tag : tags) {
+				tagsList.add(tag);
+			}
+			log.info("statTags retrieved");	
+		    
 			//create a list of vocabStat and compute the number of incoming links for each
 			List<StatVocab> statVocabs = new ArrayList<StatVocab>();
 			for (Vocabulary vocab : vocabList) {
@@ -121,12 +135,12 @@ public class Stats extends CmdGeneral {
 			//replace the object in MongoDB or create it if it does not exist
 			MongoCollection statCollection = DropCreateCollection("statvocabularies",jongo);
 			statCollection.insert(statVocabs.toArray());
+			log.info("statVocabularies updated");	
 			
-			
-			//create a list of tagStat and compute the number of occurrences in vocabularies
+			//create a list of stagStat and compute the number of occurrences in vocabularies
 			List<StatTag> statTags = new ArrayList<StatTag>();
 			
-			//create a list of tagStat and compute the number of occurrences in vocabularies
+			//create a list of stagLangs and compute the number of occurrences in vocabularies
 			List<StatLang> statLangs = new ArrayList<StatLang>();
 			
 			for (Vocabulary vocab : vocabList) {
@@ -178,7 +192,7 @@ public class Stats extends CmdGeneral {
 			//update statVocabs
 			for (StatVocab statVocab : statVocabs) {
 				statCollection.update("{uri:#}", statVocab.getUri()).with(statVocab);
-			}
+			}	
 			
 			//change id for labels of languages and then populate mongodb
 			for (Iterator<StatLang> iterator = statLangs.iterator(); iterator.hasNext();) {
@@ -187,10 +201,19 @@ public class Stats extends CmdGeneral {
 			}
 			MongoCollection statLangsCollection = DropCreateCollection("statlanguages",jongo);
 			statLangsCollection.insert(statLangs.toArray());
-					
+			log.info("statLanguages updated");		
+			
+			//jtrillos
+			//change NbOccurrences for labels of statTags and then populate mongodb
+			for (Iterator<StatTag> iterator = tagsList.iterator(); iterator.hasNext();) {
+				StatTag tagList = (StatTag) iterator.next();
+				tagList.setNbOccurrences(getTagOccurrences(statTags, tagList.getLabel()));
+			}
+			
 			//replace the object in MongoDB or create it if it does not exist
 			MongoCollection statTagsCollection = DropCreateCollection("stattags",jongo);
-			statTagsCollection.insert(statTags.toArray());
+			statTagsCollection.insert(tagsList.toArray());
+			log.info("statTags updated");	
 			
 			log.info("####### </Stats> #######");
 			long estimatedTime = System.currentTimeMillis() - startTime;
@@ -218,6 +241,21 @@ public class Stats extends CmdGeneral {
 			}
 		}
 		return "unknown";
+	}
+	
+	//jtrillos
+	private int getTagOccurrences(List<StatTag> tags , String label){
+		for (Iterator<StatTag> iterator = tags.iterator(); iterator.hasNext();) {
+			try{
+				StatTag tag = (StatTag) iterator.next();
+				if(tag.getLabel().equals(label)){
+					return tag.getNbOccurrences();
+				}
+			} catch (Exception e){
+				log.error("StatTag not found"+ e.getMessage());
+			}
+		}
+		return 0;
 	}
 	
 }
