@@ -40,6 +40,9 @@ public class Stats extends CmdGeneral {
 	private String dbName;
 	private static MongoCollection vocabCollection;
 	private static MongoCollection langCollection;
+	//trillos
+	private static MongoCollection tagCollection;
+	private static MongoCollection pilotCollection;
 	private static Jongo jongo;
 	
 	public static void main(String... args) {
@@ -70,7 +73,7 @@ public class Stats extends CmdGeneral {
 			doHelp();
 		}
 		configFilePath = getPositionalArg(0);*/
-		//atrillos
+		//trillos
 		configFilePath = configPath.configFilePath;
 		//load properties from the config file
 		try {
@@ -83,6 +86,9 @@ public class Stats extends CmdGeneral {
 			jongo = new Jongo(new MongoClient(hostName).getDB(dbName));
 			vocabCollection = jongo.getCollection("vocabularies");
 			langCollection = jongo.getCollection("languages");
+			//trillos
+			tagCollection = jongo.getCollection("stattags");
+			pilotCollection = jongo.getCollection("pilots");
 			
 		} catch (FileNotFoundException e) {
 			log.error(e.getMessage());
@@ -112,6 +118,24 @@ public class Stats extends CmdGeneral {
 				langList.add(lang);
 			}
 		        log.info("language retrieved");	
+
+		    //trillos
+			//get the list of statTags (Backup)
+			MongoCursor<StatTag> tags = tagCollection.find().as(StatTag.class);
+			List<StatTag> tagsList = new ArrayList<StatTag>();
+			for (StatTag tag : tags) {
+				tagsList.add(tag);
+			}
+			log.info("statTags retrieved");	
+			
+			//get the list of pilots (Backup)
+			MongoCursor<Pilot> pilots = pilotCollection.find().as(Pilot.class);
+			List<Pilot> pilotsList = new ArrayList<Pilot>();
+			for (Pilot pilot : pilots) {
+				pilotsList.add(pilot);
+			}
+			log.info("pilots retrieved");
+
 			//create a list of vocabStat and compute the number of incoming links for each
 			List<StatVocab> statVocabs = new ArrayList<StatVocab>();
 			for (Vocabulary vocab : vocabList) {
@@ -122,13 +146,13 @@ public class Stats extends CmdGeneral {
 			//replace the object in MongoDB or create it if it does not exist
 			MongoCollection statCollection = DropCreateCollection("statvocabularies",jongo);
 			statCollection.insert(statVocabs.toArray());
-			
+			log.info("statVocabularies updated");	
 			
 			//create a list of tagStat and compute the number of occurrences in vocabularies
 			List<StatTag> statTags = new ArrayList<StatTag>();
 			
-			//atrillos
-			//create a list of pilotStat and compute the number of occurrences in vocabularies
+			//trillos
+			//create a list of pilots and compute the number of occurrences in vocabularies
 			List<Pilot> pilotTags = new ArrayList<Pilot>();
 			
 			//create a list of tagStat and compute the number of occurrences in vocabularies
@@ -144,7 +168,7 @@ public class Stats extends CmdGeneral {
 						else statTags.add(statTag);
 					}
 				}
-				//atrillos
+				//trillos
 				if(vocab.getPilots()!=null){
 					for (String pilot : vocab.getPilots()) {
 						Pilot pilotTag = new Pilot(pilot);
@@ -201,15 +225,30 @@ public class Stats extends CmdGeneral {
 			}
 			MongoCollection statLangsCollection = DropCreateCollection("statlanguages",jongo);
 			statLangsCollection.insert(statLangs.toArray());
+			log.info("statLanguages updated");
+
+			//trillos
+			//change NbOccurrences for labels of statTags and then populate mongodb
+			for (Iterator<StatTag> iterator = tagsList.iterator(); iterator.hasNext();) {
+				StatTag tagList = (StatTag) iterator.next();
+				tagList.setNbOccurrences(getTagOccurrences(statTags, tagList.getLabel()));
+			}
+			
+			//change NbOccurrences for labels of pilots and then populate mongodb
+			for (Iterator<Pilot> iterator = pilotsList.iterator(); iterator.hasNext();) {
+				Pilot pilotList = (Pilot) iterator.next();
+				pilotList.setNbOccurrences(getPilotOccurrences(pilotTags, pilotList.getName()));
+			}
 					
 			//replace the object in MongoDB or create it if it does not exist
 			MongoCollection statTagsCollection = DropCreateCollection("stattags",jongo);
-			statTagsCollection.insert(statTags.toArray());
+			statTagsCollection.insert(tagsList.toArray());
+			log.info("statTags updated");
 			
-			//atrillos
+			//trillos
 			//replace the object in MongoDB or create it if it does not exist
 			MongoCollection pilotTagsCollection = DropCreateCollection("pilots",jongo);
-			pilotTagsCollection.insert(pilotTags.toArray());
+			pilotTagsCollection.insert(pilotsList.toArray());
 			
 			log.info("####### </Stats> #######");
 			long estimatedTime = System.currentTimeMillis() - startTime;
@@ -237,6 +276,36 @@ public class Stats extends CmdGeneral {
 			}
 		}
 		return "unknown";
+	}
+
+	//trillos
+	private int getTagOccurrences(List<StatTag> tags , String label){
+		for (Iterator<StatTag> iterator = tags.iterator(); iterator.hasNext();) {
+			try{
+				StatTag tag = (StatTag) iterator.next();
+				if(tag.getLabel().equals(label)){
+					return tag.getNbOccurrences();
+				}
+			} catch (Exception e){
+				log.error("StatTag not found"+ e.getMessage());
+			}
+		}
+		return 0;
+	}
+	
+	//trillos	
+	private int getPilotOccurrences(List<Pilot> pilots , String name){
+		for (Iterator<Pilot> iterator = pilots.iterator(); iterator.hasNext();) {
+			try{
+				Pilot pilot = (Pilot) iterator.next();
+				if(pilot.getName().equals(name)){
+					return pilot.getNbOccurrences();
+				}
+			} catch (Exception e){
+				log.error("StatTag not found"+ e.getMessage());
+			}
+		}
+		return 0;
 	}
 	
 }
