@@ -1,0 +1,18 @@
+{
+  "pilot": {
+    "properties": {
+	  "name":{
+        "type":"multi_field",
+        "fields":{
+          "name":{ "type":"string"},
+          "autocomplete":{
+            "search_analyzer" : "autocomplete_ngram_search",
+            "index_analyzer" : "autocomplete_ngram_index",
+            "type":"string"
+          }
+        }
+      },
+      "http://www.w3.org/2000/01/rdf-schema#comment*" : {"type" : "string"}
+    }
+  }
+}

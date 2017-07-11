@@ -8,8 +8,8 @@ import com.hp.hpl.jena.rdf.model.Resource;
 public class DatatypeDescriber extends TermDescriber {
 	public final static String TYPE = "datatype";
 
-	public DatatypeDescriber(SPARQLRunner source, String prefix, String tag) {
-		super(source, prefix, tag);
+	public DatatypeDescriber(SPARQLRunner source, String prefix, String tag, String pilot) {
+		super(source, prefix, tag, pilot);
 	}
 	
 	public void describe(Resource datatype, ObjectNode descriptionRoot) {

@@ -17,8 +17,8 @@ import com.hp.hpl.jena.rdf.model.Resource;
 public class InstanceDescriber extends TermDescriber {
 	public final static String TYPE = "instance";
 	
-	public InstanceDescriber(SPARQLRunner source, String prefix, String tag) {
-		super(source, prefix, tag);
+	public InstanceDescriber(SPARQLRunner source, String prefix, String tag, String pilot) {
+		super(source, prefix, tag, pilot);
 	}
 	
 	public void describe(Resource class_, ObjectNode descriptionRoot) {

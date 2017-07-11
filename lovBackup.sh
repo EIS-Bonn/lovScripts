@@ -41,7 +41,7 @@
 # DBAUTHDB=""
 
 # Host name (or IP address) of mongo server e.g localhost
-DBHOST="127.0.0.1"
+DBHOST="mongodb"
 
 # Port that mongo is listening on
 DBPORT="27017"
@@ -50,7 +50,7 @@ DBPORT="27017"
 DBNAME="bdo"
 
 # Backup directory location e.g /backups
-BACKUPDIR="/usr/local/lov/backups"
+BACKUPDIR="/BDO/scripts/backups"
 
 # Mail setup
 # What would you like to be mailed to you?

@@ -41,7 +41,7 @@ public class VocabularyDetailDescriber extends SPARQLDescriber {
 		ArrayNode classes = mapper.createArrayNode();
 		ArrayNode properties = mapper.createArrayNode();
 		ArrayNode datatypes = mapper.createArrayNode();
-		for (VocidexDocument document: new VocabularyTermExtractor(getSource(), prefix, null)) {
+		for (VocidexDocument document: new VocabularyTermExtractor(getSource(), prefix, null, null)) {
 			if (document.getType() == ClassDescriber.TYPE) {
 				classes.add(document.getRoot());
 			} else if (document.getType() == PropertyDescriber.TYPE) {

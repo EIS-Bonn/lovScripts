@@ -30,6 +30,7 @@ import org.lov.objects.Comment;
 import org.lov.objects.Element;
 import org.lov.objects.LangValue;
 import org.lov.objects.Language;
+import org.lov.objects.Pilot;
 import org.lov.objects.Vocabulary;
 import org.lov.objects.VocabularyVersionWrapper;
 import org.lov.vocidex.extract.LOVExtractor;
@@ -67,6 +68,7 @@ public class Mongo2RDF extends CmdGeneral {
 	private String lovDatasetURI;
 	private Properties lovConfig;
 	private MongoCollection langCollection;
+	private MongoCollection pilotCollection;
 	private MongoCollection agentCollection;
 	private MongoCollection vocabCollection;
 	private MongoCollection elementCollection;
@@ -117,6 +119,8 @@ public class Mongo2RDF extends CmdGeneral {
 			//bootstrap connection to MongoDB and create model
 			Jongo jongo = new Jongo(new MongoClient(hostName).getDB(dbName));
 			langCollection = jongo.getCollection("languages");
+			//atrillos
+			pilotCollection = jongo.getCollection("pilots");
 			agentCollection = jongo.getCollection("agents");
 			vocabCollection = jongo.getCollection("vocabularies");
 			elementCollection = jongo.getCollection("elements");
@@ -154,6 +158,26 @@ public class Mongo2RDF extends CmdGeneral {
 				    estimatedTime - TimeUnit.MILLISECONDS.toSeconds(estimatedTime)
 				));
 			
+			//atrillos
+			// Process pilots
+			startTime = System.currentTimeMillis();
+			log.info("Processing Pilots");
+			MongoCursor<Pilot> pilots = pilotCollection.find().as(Pilot.class);
+			cpt=0;
+			for (Pilot pilot : pilots) {
+				cpt++;
+				String name = pilot.getName().replaceAll(" ", "_");
+				sthlp.addResourceStatement(name, LovConstants.RDF_FULL_TYPE, LovConstants.PILOTS_FULL_NAME);
+				sthlp.addLiteralStatement(name, LovConstants.DC_TERMS_FULL_TITLE, pilot.getName(), null, null);
+				sthlp.addLiteralStatement(name, LovConstants.RDFS_COMMENT, pilot.getDescription(), XSDDatatype.XSDstring, null);
+				sthlp.addLiteralStatement(name, LovConstants.VOAF_FULL_OCCURRENCES, ""+pilot.getNbOccurrences(), XSDDatatype.XSDint, null);
+			
+			}
+			estimatedTime = System.currentTimeMillis() - startTime;
+			log.info("=> "+cpt+" Pilots processed in "+String.format("%d sec, %d ms", 
+				    TimeUnit.MILLISECONDS.toSeconds(estimatedTime),
+				    estimatedTime - TimeUnit.MILLISECONDS.toSeconds(estimatedTime)
+				));
 			
 			// Process Agents
 			startTime = System.currentTimeMillis();
@@ -233,6 +257,11 @@ public class Mongo2RDF extends CmdGeneral {
 				if(vocab.getDescriptions()!=null){
 					for(LangValue lv: vocab.getDescriptions()){
 						sthlp.addLiteralStatement(vocab.getUri(), LovConstants.DC_TERMS_FULL_DESCRIPTION, lv.getValue(), null, lv.getLang());
+					}
+				}
+				if(vocab.getPilots()!=null){
+					for (String pilot : vocab.getPilots()) {
+						sthlp.addLiteralStatement(vocab.getUri(), LovConstants.LOV_PILOT, pilot, null, null);
 					}
 				}
 				if(vocab.getTags()!=null){

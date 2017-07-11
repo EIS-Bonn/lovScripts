@@ -12,8 +12,8 @@ public class PropertyDescriber extends TermDescriber {
 
 	//private final DatatypeIdentifier datatypeIdentifier;
 	
-	public PropertyDescriber(SPARQLRunner source, String prefix, String tag) {
-		super(source, prefix, tag);
+	public PropertyDescriber(SPARQLRunner source, String prefix, String tag, String pilot) {
+		super(source, prefix, tag, pilot);
 		//this.datatypeIdentifier = new DatatypeIdentifier();
 	}
 	

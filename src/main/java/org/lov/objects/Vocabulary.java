@@ -27,6 +27,7 @@ public class Vocabulary implements Serializable{
 	private List<LangValue> titles;
 	private List<LangValue> descriptions;
 	private List<String> tags;
+	private List<String> pilots;
 	
 	/*distinguish first issued and created/modified in LOV*/
 	private Date createdInLOVAt; //creation of the record in LOV
@@ -258,5 +259,18 @@ public class Vocabulary implements Serializable{
 			return getVersions().get(0);
 		}
 		return null;
+	}
+
+	public List<String> getPilots() {
+		return pilots;
+	}
+
+	public void setPilots(List<String> pilots) {
+		this.pilots = pilots;
+	}
+	
+	public void addPilots(String pilot){
+		if(pilots==null)pilots = new ArrayList<String>();
+		pilots.add(pilot);
 	}
 }

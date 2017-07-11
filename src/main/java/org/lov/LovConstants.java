@@ -55,6 +55,9 @@ public class LovConstants {
 	public static String OWL_IMPORTS="owl:imports";
 	public static String OWL_FULL_IMPORTS=NSP_OWL+"imports";
 	public static String RDFS_FULL_IS_DEFINED_BY = NSP_RDFS+"isDefinedBy";
+	//atrillos
+	public static String RDFS_COMMENT = NSP_RDFS+"comment";
+	public static String LOV_PILOT = NSP_LOV+"pilot";
 	public static String OWL_VERSION_INFO="owl:versionInfo";
 	public static String OWL_FULL_VERSION_INFO=NSP_OWL+"versionInfo";
 	public static String OWL_FULL_SAMEAS=NSP_OWL+"sameAs";
@@ -183,6 +186,7 @@ public class LovConstants {
 	public static String LEXVO_FULL_LANGUAGE= NSP_LEXVO+"Language";
 	public static String MOAT_FULL_TAG= NSP_MOAT+"Tag";
 	public static String TAGS_FULL_NAME= NSP_TAGS+"name";
+	public static String PILOTS_FULL_NAME= NSP_LOV+"pilot";
 	
 	
 	

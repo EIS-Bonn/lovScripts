@@ -13,11 +13,13 @@ public abstract class TermDescriber extends SPARQLDescriber {
 	protected final StrLiteralDescriber strLiteralDescriber;
 	private final String prefix;
 	private final String tag;
+	private final String pilot;
 	
-	public TermDescriber(SPARQLRunner source, String prefix, String tag) {
+	public TermDescriber(SPARQLRunner source, String prefix, String tag, String pilot) {
 		super(source);
 		this.prefix = prefix;
 		this.tag=tag;
+		this.pilot=pilot;
 		this.strLiteralDescriber = new StrLiteralDescriber(source);
 	}
 	
@@ -59,6 +61,7 @@ public abstract class TermDescriber extends SPARQLDescriber {
 //		}
 		putString(descriptionRoot, "labelsWithoutLang", getLabelFromSource(term));
 		if(tag!=null)putArrayString(descriptionRoot, "tags", tag);
+		if(pilot!=null)putArrayString(descriptionRoot, "pilots", pilot);
 		// Adds "label" key
 		strLiteralDescriber.describe(term, descriptionRoot);
 		//labelDescriber.describe(term, descriptionRoot);

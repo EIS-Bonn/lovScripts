@@ -6,5 +6,5 @@ package org.lov.cli;
  */
 
 public class configPath {
-	public static String configFilePath="/root/LOV/lovScripts/lov.config";
+	public static String configFilePath="/BDO/lovScripts/lov.config";
 }

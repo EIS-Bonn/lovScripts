@@ -15,6 +15,8 @@ import org.lov.vocidex.VocidexException;
 import org.lov.vocidex.VocidexIndex;
 import org.lov.vocidex.extract.AgentsExtractor;
 import org.lov.vocidex.extract.LOVExtractor;
+import org.lov.vocidex.extract.PilotsExtractor;
+//import org.lov.vocidex.extract.PilotsExtractor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -110,6 +112,18 @@ public class ElasticsearchIndexLOV extends CmdGeneral {
 				}
 				log.info(cpt+ " Agents inserted");
 				
+				/* Process Pilots */
+				log.info("--Inserting Pilots--");
+				PilotsExtractor pilotExtractor = new PilotsExtractor(dataset);
+				cpt=0;
+				for (VocidexDocument document: pilotExtractor) {
+					index.addDocument(document);
+					cpt++;
+				}
+				log.info(cpt+ " Pilots inserted");
+				
+				/* Process LOV vocabularies */
+				log.info("--Inserting Vocabularies--");
 				LOVExtractor lovTransformer = new LOVExtractor(dataset);
 				for (VocidexDocument document: lovTransformer) {
 					//log.info("Indexing " + document.getId());

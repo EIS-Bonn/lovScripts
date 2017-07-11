@@ -57,6 +57,14 @@ public class LOVVocabularyDescriber extends SPARQLDescriber {
 		}
 		putArrayString(descriptionRoot, "tags", tags);
 		
+		ResultSet rsPilots = getSource().getResultSet("lov-term-pilots.sparql", "vocab", vocabulary);
+		List<String> pilots = new ArrayList<String>();
+		while(rsPilots.hasNext()){
+			QuerySolution qs2 = rsPilots.next();
+			pilots.add(qs2.get("pilot").asLiteral().getLexicalForm());
+		}
+		putArrayString(descriptionRoot, "pilots", pilots);
+		
 		ResultSet rslangs = getSource().getResultSet("lov-vocabulary-languages.sparql", "vocab", vocabulary);
 		List<String> langs = new ArrayList<String>();
 		while(rslangs.hasNext()){

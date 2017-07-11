@@ -24,43 +24,45 @@ public class VocabularyTermExtractor implements Extractor {
 	private final SPARQLRunner source;
 	private final String prefix;
 	private final String tag;
+	private final String pilot;
 	
 	/**
 	 * @param source Model containing declarations of vocabulary terms
 	 * @param prefix Prefix to be used for creating prefixed names; may be null
 	 */
-	public VocabularyTermExtractor(SPARQLRunner source, String prefix, String tag) {
+	public VocabularyTermExtractor(SPARQLRunner source, String prefix, String tag, String pilot) {
 		this.source = source;
 		this.prefix = prefix;
 		this.tag=tag;
+		this.pilot=pilot;
 	}
 	
 	/**
 	 * Extract only classes
 	 */
 	public Iterator<VocidexDocument> classes() {
-		return createDescriptionIterator("list-classes.sparql", "class", new ClassDescriber(source, prefix,tag));
+		return createDescriptionIterator("list-classes.sparql", "class", new ClassDescriber(source, prefix,tag,pilot));
 	}
 	
 	/**
 	 * Extract only properties
 	 */
 	public Iterator<VocidexDocument> properties() {
-		return createDescriptionIterator("list-properties.sparql", "property", new PropertyDescriber(source, prefix,tag));
+		return createDescriptionIterator("list-properties.sparql", "property", new PropertyDescriber(source, prefix,tag,pilot));
 	}
 	
 	/**
 	 * Extract only data types
 	 */
 	public Iterator<VocidexDocument> datatypes() {
-		return createDescriptionIterator("list-datatypes.sparql", "datatype", new DatatypeDescriber(source, prefix,tag));
+		return createDescriptionIterator("list-datatypes.sparql", "datatype", new DatatypeDescriber(source, prefix,tag,pilot));
 	}
 	
 	/**
 	 * Extract only instances
 	 */
 	public Iterator<VocidexDocument> instances() {
-		return createDescriptionIterator("list-instances.sparql", "instance", new InstanceDescriber(source, prefix,tag));
+		return createDescriptionIterator("list-instances.sparql", "instance", new InstanceDescriber(source, prefix,tag,pilot));
 	}
 
 	/**
