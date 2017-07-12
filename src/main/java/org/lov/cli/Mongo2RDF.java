@@ -72,7 +72,7 @@ public class Mongo2RDF extends CmdGeneral {
 	private MongoCollection agentCollection;
 	private MongoCollection vocabCollection;
 	private MongoCollection elementCollection;
-	//atrillos
+	//trillos
 	private String configFilePath;
 	
 	public Mongo2RDF(String[] args) {
@@ -92,7 +92,7 @@ public class Mongo2RDF extends CmdGeneral {
 			doHelp();
 		}
 		String configFilePath = getPositionalArg(0);*/
-		//atrillos
+		//trillos
 		configFilePath = configPath.configFilePath;
 		//load properties from the config file
 		try {
@@ -119,7 +119,7 @@ public class Mongo2RDF extends CmdGeneral {
 			//bootstrap connection to MongoDB and create model
 			Jongo jongo = new Jongo(new MongoClient(hostName).getDB(dbName));
 			langCollection = jongo.getCollection("languages");
-			//atrillos
+			//trillos
 			pilotCollection = jongo.getCollection("pilots");
 			agentCollection = jongo.getCollection("agents");
 			vocabCollection = jongo.getCollection("vocabularies");
@@ -158,7 +158,7 @@ public class Mongo2RDF extends CmdGeneral {
 				    estimatedTime - TimeUnit.MILLISECONDS.toSeconds(estimatedTime)
 				));
 			
-			//atrillos
+			//trillos
 			// Process pilots
 			startTime = System.currentTimeMillis();
 			log.info("Processing Pilots");
@@ -166,11 +166,10 @@ public class Mongo2RDF extends CmdGeneral {
 			cpt=0;
 			for (Pilot pilot : pilots) {
 				cpt++;
-				String name = pilot.getName().replaceAll(" ", "_");
-				sthlp.addResourceStatement(name, LovConstants.RDF_FULL_TYPE, LovConstants.PILOTS_FULL_NAME);
-				sthlp.addLiteralStatement(name, LovConstants.DC_TERMS_FULL_TITLE, pilot.getName(), null, null);
-				sthlp.addLiteralStatement(name, LovConstants.RDFS_COMMENT, pilot.getDescription(), XSDDatatype.XSDstring, null);
-				sthlp.addLiteralStatement(name, LovConstants.VOAF_FULL_OCCURRENCES, ""+pilot.getNbOccurrences(), XSDDatatype.XSDint, null);
+				sthlp.addResourceStatement(pilot.getName(), LovConstants.RDF_FULL_TYPE, LovConstants.PILOTS_FULL_NAME);
+				sthlp.addLiteralStatement(pilot.getName(), LovConstants.DC_TERMS_FULL_TITLE, pilot.getName(), null, null);
+				sthlp.addLiteralStatement(pilot.getName(), LovConstants.RDFS_COMMENT, pilot.getDescription(), XSDDatatype.XSDstring, null);
+				sthlp.addLiteralStatement(pilot.getName(), LovConstants.VOAF_FULL_OCCURRENCES, ""+pilot.getNbOccurrences(), XSDDatatype.XSDint, null);
 			
 			}
 			estimatedTime = System.currentTimeMillis() - startTime;
