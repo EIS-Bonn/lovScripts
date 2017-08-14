@@ -313,6 +313,7 @@ public class Mongo2RDF extends CmdGeneral {
 						sthlp.addResourceStatement(bn_datasetOcc, LovConstants.VOAF_FULL_IN_DATASET, dataset.getUri());
 						sthlp.addLiteralStatement(bn_datasetOcc, LovConstants.VOAF_FULL_OCCURRENCES, ""+dataset.getOccurrences(), XSDDatatype.XSDint, null);
 						sthlp.addLiteralStatement(dataset.getUri(), LovConstants.RDFS_LABEL, dataset.getLabel(), null, "en");
+						sthlp.addLiteralStatement(bn_datasetOcc, LovConstants.DC_TERMS_DATE, DateYMD(dataset.getCreatedAt()), XSDDatatype.XSDdate, null);
 						sumOccurences+=dataset.getOccurrences();
 					}
 					//attach aggregation metrics

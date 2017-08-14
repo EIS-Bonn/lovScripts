@@ -149,7 +149,7 @@ public class VocabularyDescriber {
 			QuerySolution qsReview = rs.next();
 			String date = qsReview.get("date").asLiteral().getLexicalForm();
 			String body = qsReview.get("text").asLiteral().getLexicalForm();
-			if(!body.equals("Vocabulary inserted into the LOV ecosystem.")){
+			if(!body.equals("Vocabulary inserted into the BDO ecosystem.")){
 				try {
 					Agent agent = iCom.getAgentCollection().findOne("{prefUri:#}", qsReview.get("user").asResource().getURI()).as(Agent.class);
 					if(agent!=null){
@@ -258,10 +258,17 @@ public class VocabularyDescriber {
 			String datasetLabel = qsReview.get("datasetLabel").asLiteral().getLexicalForm();
 			String datasetUri = qsReview.get("dataset").asResource().toString();
 			String occurrences = qsReview.get("occurrences").asLiteral().getLexicalForm();
+			String createdAt = qsReview.get("createdAt").asLiteral().getLexicalForm();
 			
-			Dataset dataset = new Dataset(datasetUri, datasetLabel, Integer.parseInt(occurrences));
+			Dataset dataset;
+			try {
+				dataset = new Dataset(datasetUri, datasetLabel, Integer.parseInt(occurrences),sdf.parse(createdAt));
+				vocab.addDataset(dataset);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 							
-			vocab.addDataset(dataset);
+			
 		}
 		
 		return vocab;

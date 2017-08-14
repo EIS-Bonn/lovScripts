@@ -1,6 +1,7 @@
 package org.lov.objects;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Represents a Dataset: dataset using vocabularies
@@ -17,15 +18,16 @@ public class Dataset implements Serializable{
 	private String uri;
 	private String label;
 	private int occurrences;
-	
+	private Date createdAt;	
 	
 	
 	public Dataset(){super();}
-	public Dataset(String uri, String label, int occurrences){
+	public Dataset(String uri, String label, int occurrences, Date createdAt){
 		super();
 		this.uri=uri;
 		this.label=label;
 		this.occurrences=occurrences;
+		this.createdAt=createdAt;
 	}
 	
 	public String getUri() {
@@ -45,5 +47,11 @@ public class Dataset implements Serializable{
 	}
 	public void setOccurrences(int occurrences) {
 		this.occurrences = occurrences;
+	}
+	public Date getCreatedAt() {
+		return createdAt;
+	}
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
 	}
 }
