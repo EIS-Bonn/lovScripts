@@ -103,7 +103,8 @@ public class Rdf2mongo extends CmdGeneral implements ICom {
 
 	@Override
 	protected void exec() {
-		try {
+		log.info("RDF2Mongo is deprecated");
+		/*try {
 			//parse languages.rdf
 			log.info("Loading Languages dump: " + langDumpFile);
 			Dataset langDataset = RDFDataMgr.loadDataset(langDumpFile, Lang.TTL);
@@ -128,7 +129,7 @@ public class Rdf2mongo extends CmdGeneral implements ICom {
 			DB db = Mongo.Holder.singleton().connect(new MongoClientURI("mongodb://"+hostName)).getDB(dbName);
 			Jongo jongo = new Jongo(db);
 			
-			/* Process Languages */
+			 Process Languages 
 			log.info("--Inserting Languages--");
 			
 			langCollection = DropCreateCollection("languages",jongo);//jongo.getCollection("languages");
@@ -143,8 +144,8 @@ public class Rdf2mongo extends CmdGeneral implements ICom {
 			langDataset.close();
 			log.info(cpt+ " Languages inserted");
 			
-			/* Process Agents */
-			/*log.info("--Inserting Agents--");
+			 Process Agents 
+			log.info("--Inserting Agents--");
 			agentCollection = DropCreateCollection("agents",jongo);
 			AgentsExtractor agentExtractor = new AgentsExtractor(dataset);
 			cpt=0;
@@ -152,11 +153,11 @@ public class Rdf2mongo extends CmdGeneral implements ICom {
 				agentCollection.insert(agent);
 				cpt++;
 			}
-			log.info(cpt+ " Agents inserted");*/
+			log.info(cpt+ " Agents inserted");
 			
 			
-			/* Process Metrics for elements */
-			/*log.info("--Inserting Elements--");
+			 Process Metrics for elements 
+			log.info("--Inserting Elements--");
 			elementCollection = DropCreateCollection("elements",jongo);
 			ElementsExtractor elementsExtractor = new ElementsExtractor(metricsDataset);
 			cpt=0;
@@ -164,10 +165,10 @@ public class Rdf2mongo extends CmdGeneral implements ICom {
 				elementCollection.insert(el);
 				cpt++;
 			}
-			log.info(cpt+ " Vocabulary elements with metrics inserted");*/
+			log.info(cpt+ " Vocabulary elements with metrics inserted");
 						
-			/* create users for LOV editors*/
-			/*log.info("--Inserting Users--");
+			 create users for LOV editors
+			log.info("--Inserting Users--");
 			MongoCollection usersCollection = DropCreateCollection("users",jongo);
 			UsersExtractor userExtractor = new UsersExtractor(dataset,agentCollection);
 			cpt=0;
@@ -175,12 +176,12 @@ public class Rdf2mongo extends CmdGeneral implements ICom {
 				usersCollection.insert(user);
 				cpt++;
 			}
-			log.info(cpt+ " Users inserted");*/
+			log.info(cpt+ " Users inserted");
 			
 			
 			
-			/* Process Vocabularies */
-			/*log.info("--Inserting Vocabularies--");
+			 Process Vocabularies 
+			log.info("--Inserting Vocabularies--");
 			vocabCollection = DropCreateCollection("vocabularies",jongo);	
 			//clear versions folder
 			File vocabFolder = new File(lovConfig.getProperty("VERSIONS_DIR_PATH"));
@@ -195,7 +196,7 @@ public class Rdf2mongo extends CmdGeneral implements ICom {
 			}
 			log.info(cpt+ " Vocabularies inserted");
 			dataset.close();
-			log.info("---Done---");*/
+			log.info("---Done---");
 			
 			
 		} catch (UnknownHostException e){
@@ -204,7 +205,7 @@ public class Rdf2mongo extends CmdGeneral implements ICom {
 			cmdError("Not found: " + ex.getMessage());
 		} catch (LOVException ex) {
 			cmdError(ex.getMessage());
-		}
+		}*/
 	}
 	
 	private MongoCollection DropCreateCollection(String collectionname, Jongo jongo){

@@ -10,8 +10,6 @@ Scripts include:
 
 **Mongo2RDF** - Export the LOV data from MongoDB to RDF representation (N3 file for LOV records only and NQuads for LOV records + latest version of each vocabulary)
 
-**Rdf2mongo** - For the LOV migration from v2 to v3
-
 **Stats** - Generates summary stats for vocabulaies, tags, etc. stored in MongoDB.
 
 **Suggest** - Access to LOV bot for getting an analysis of a URI.
