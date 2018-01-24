@@ -1,6 +1,6 @@
 # Linked Open Vocabularies (LOV) - Scripts
 
-This is the [Linked Open Vocabularies (LOV) Scripts code repository](http://lov.okfn.org/dataset/lov/). LOV provides a choice of several hundreds of such vocabularies, based on quality requirements including URI stability and availability on the Web, use of standard formats and publication best practices, quality metadata and documentation, identifiable and trustable publication body, proper versioning policy.
+This is the [BigDataOcean Metadata Docker Repository (based on LOV)](https://github.com/EIS-Bonn/BigDataOcean-LOV). LOV provides a choice of several hundreds of such vocabularies, based on quality requirements including URI stability and availability on the Web, use of standard formats and publication best practices, quality metadata and documentation, identifiable and trustable publication body, proper versioning policy.
 
 Scripts include:
 
@@ -15,14 +15,13 @@ Scripts include:
 **Suggest** - Access to LOV bot for getting an analysis of a URI.
 
 
-
 ## Install
 
 **NOTE:** You need to have node.js, mongodb and elasticsearch installed and running.
 
 ```sh
   $ git clone git://github.com/pyvandenbussche/lovScripts.git
-  $ mvn install
+  $ mvn clean install
 ```
 
 
