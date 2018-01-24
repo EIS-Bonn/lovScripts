@@ -6,7 +6,5 @@ PREFIX dcterms:<http://purl.org/dc/terms/>
 PREFIX dcat:<http://www.w3.org/ns/dcat#>
 
 SELECT DISTINCT ?tag{
-  GRAPH <http://localhost:3333/dataset/bdo>{
-	?vocab dcat:keyword ?tag.
-  }
+  ?vocab dcat:keyword ?tag.
 }

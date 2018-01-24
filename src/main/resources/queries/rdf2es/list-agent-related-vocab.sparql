@@ -3,9 +3,7 @@ PREFIX dct: <http://purl.org/dc/terms/>
 
 SELECT DISTINCT ?vocab {
   # Check only the LOV metadata graph
-  GRAPH <http://localhost:3333/dataset/bdo> {
-    {?vocab dct:creator ?agent}
+  {?vocab dct:creator ?agent}
     UNION{?vocab dct:contributor ?agent}
     UNION{?vocab dct:publisher ?agent}
-  }
 }

@@ -10,9 +10,7 @@ PREFIX vann: <http://purl.org/vocab/vann/>
 # at least.
 SELECT DISTINCT ?vocab {
   # Check only the LOV metadata graph
-  GRAPH <http://localhost:3333/dataset/bdo> {
-    ?vocab a voaf:Vocabulary .
+  ?vocab a voaf:Vocabulary .
     ?vocab vann:preferredNamespacePrefix ?prefix .
     ?vocab vann:preferredNamespaceUri ?nsp .
-  }
 }

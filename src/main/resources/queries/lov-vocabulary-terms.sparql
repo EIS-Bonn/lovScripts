@@ -10,10 +10,8 @@ SELECT ?term ?vocab {
 
   # Find all vocabularies, with the attached
   # preferred namespace URI, from LOV metadata
-  GRAPH <http://localhost:3333/dataset/bdo/lov.rdf> {
-    ?vocab a voaf:Vocabulary;
+  ?vocab a voaf:Vocabulary;
       vann:preferredNamespaceUri ?ns
-  }
 
   # Now find all terms mentioned in the aggregated vocabulary graphs
   # We use DISTINCT to get only one match for terms that are defined

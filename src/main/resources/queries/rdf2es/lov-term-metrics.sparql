@@ -7,11 +7,9 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 # ?term A term (class, property or datatype)
 SELECT *{
   # Metrics information are present in lov metrics graph
-  GRAPH <http://localhost:3333/dataset/bdo>{
-	# We select the 4 metrics available
+  # We select the 4 metrics available
 	?term voaf:occurrencesInDatasets ?occurrencesInDatasets;
 		voaf:reusedByDatasets ?reusedByDatasets.
 	OPTIONAL{?term voaf:reusedByVocabularies ?reusedByVocabularies}
 	OPTIONAL{?term voaf:occurrencesInVocabularies ?occurrencesInVocabularies}
-  }
 }LIMIT 1

@@ -11,8 +11,6 @@ PREFIX vann: <http://purl.org/vocab/vann/>
 # ?title The vocabulary's title
 SELECT ?title{
   # Check only the LOV metadata graph
-  GRAPH <http://localhost:3333/dataset/bdo> {
-    ?vocab dct:title ?title .
-  }
+  ?vocab dct:title ?title .
 }
 ORDER BY ASC(IF(LANGMATCHES(LANG(?title), ?prefLang), 1, 2))
