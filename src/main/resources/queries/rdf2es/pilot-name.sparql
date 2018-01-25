@@ -10,8 +10,10 @@ PREFIX lov:  <http://212.101.173.34:3333/dataset/bdo/>
 SELECT ?name {
 
   # Check only the LOV metadata graph
-  ?pilot a lov:pilot.
+  GRAPH <http://212.101.173.34:3333/dataset/bdo> {
+  	?pilot a lov:pilot.
     ?pilot dct:title ?name.
+  }
 }
 # There should only ever be one value for each property,
 # so this shouldn't change anything

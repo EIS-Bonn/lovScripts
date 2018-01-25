@@ -7,5 +7,7 @@ PREFIX dcat:<http://www.w3.org/ns/dcat#>
 PREFIX lov:  <http://212.101.173.34:3333/dataset/bdo/>
 
 SELECT DISTINCT ?pilot{
-  ?vocab lov:pilot ?pilot.
+  GRAPH <http://212.101.173.34:3333/dataset/bdo>{
+	?vocab lov:pilot ?pilot.
+  }
 }

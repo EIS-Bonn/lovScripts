@@ -10,5 +10,7 @@ PREFIX lov:  <http://212.101.173.34:3333/dataset/bdo/>
 # Finds pilots as defined in LOV metadata. 
 SELECT DISTINCT ?pilot {
   # Check only the BDO metadata graph
-  ?pilot a lov:pilot.
+  GRAPH <http://212.101.173.34:3333/dataset/bdo> {
+  	?pilot a lov:pilot.
+  }
 }

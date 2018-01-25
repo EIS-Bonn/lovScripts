@@ -6,6 +6,8 @@ PREFIX dcterms:<http://purl.org/dc/terms/>
 PREFIX dcat:<http://www.w3.org/ns/dcat#>
 
 SELECT DISTINCT ?lang{
-  ?vocab dcterms:language ?langURI.
-	?langURI rdfs:label ?lang.
+  GRAPH <http://212.101.173.34:3333/dataset/bdo>{
+	?vocab dcterms:language ?langURI.
+	?langURI rdfs:label ?lang
+  }
 }

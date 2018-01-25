@@ -9,6 +9,9 @@ PREFIX vann: <http://purl.org/vocab/vann/>
 SELECT DISTINCT ?agent {
 
   # Check only the LOV metadata graph
+  GRAPH <http://212.101.173.34:3333/dataset/bdo> {
+  # Check only the LOV metadata graph
     ?agent a foaf:Person.
     ?agent foaf:name ?name.
+  }
 }

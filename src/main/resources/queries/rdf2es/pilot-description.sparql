@@ -4,6 +4,8 @@ PREFIX lov:  <http://212.101.173.34:3333/dataset/bdo/>
 # Get AltUris (owl:sameAs) for one agent
 SELECT DISTINCT ?comment {
   # Check only the LOV metadata graph
- ?pilot a lov:pilot.
+  GRAPH <http://212.101.173.34:3333/dataset/bdo> {
+  	?pilot a lov:pilot.
     ?pilot rdfs:comment ?comment.
+  }
 }
