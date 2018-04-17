@@ -4,10 +4,10 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX bibo:<http://purl.org/ontology/bibo/>
 PREFIX dcterms:<http://purl.org/dc/terms/>
 PREFIX dcat:<http://www.w3.org/ns/dcat#>
-PREFIX lov:  <http://212.101.173.34:3333/dataset/bdo/>
+PREFIX lov:  <http://212.101.173.21:3333/dataset/bdo/>
 
 SELECT DISTINCT ?pilot{
-  GRAPH <http://212.101.173.34:3333/dataset/bdo>{
+  GRAPH <http://212.101.173.21:3333/dataset/bdo>{
 	?vocab lov:pilot ?pilot.
   }
 }

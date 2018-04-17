@@ -8,7 +8,7 @@ PREFIX vann: <http://purl.org/vocab/vann/>
 # List agents in LOV. Requires that the agent (Person or Organization) has a foaf:name
 SELECT DISTINCT ?name {
       # Check only the LOV metadata graph
-  GRAPH <http://212.101.173.34:3333/dataset/bdo> {
+  GRAPH <http://212.101.173.21:3333/dataset/bdo> {
     ?agent foaf:name ?name.
   }
 }
