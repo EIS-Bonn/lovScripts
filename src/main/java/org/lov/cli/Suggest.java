@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import org.apache.log4j.LogManager;
 import org.lov.LovBotVocabAnalyser;
 import org.lov.objects.VocabularySuggest;
 import org.slf4j.Logger;
@@ -72,6 +73,8 @@ public class Suggest extends CmdGeneral {
 
 	@Override
 	protected void exec() {
+		LogManager.getLogger("org.mongodb").setLevel(org.apache.log4j.Level.OFF);
+		
 		try {
 			VocabularySuggest result = LovBotVocabAnalyser.analyseVocabURI(vocabularyURI, lovConfig);
 //			result.prettyPrint(log);
