@@ -48,6 +48,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.shared.NotFoundException;
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
 
 /**
  * A command line tool that transform LOV mongoDB in LOV Dump. Uses {@link LOVExtractor}.
@@ -61,7 +62,6 @@ public class Mongo2RDF extends CmdGeneral {
 		new Mongo2RDF(args).mainRun();
 	}
 
-	private String hostName;
 	private String dbName;
 	private String lovNQDumpFile;
 	private String lovN3DumpFile;
@@ -100,7 +100,6 @@ public class Mongo2RDF extends CmdGeneral {
 			File file = new File(configFilePath);
 			InputStream is = new FileInputStream(file);
 			lovConfig.load(is);
-			hostName= lovConfig.getProperty("MONGO_DB_HOST")+":"+lovConfig.getProperty("MONGO_DB_PORT");
 			dbName = lovConfig.getProperty("MONGO_DB_INSTANCE");
 			lovNQDumpFile = lovConfig.getProperty("LOV_NQ_FILE_PATH");
 			lovN3DumpFile = lovConfig.getProperty("LOV_N3_FILE_PATH");
@@ -117,7 +116,11 @@ public class Mongo2RDF extends CmdGeneral {
 	protected void exec() {
 		try {
 			//bootstrap connection to MongoDB and create model
-			Jongo jongo = new Jongo(new MongoClient(hostName).getDB(dbName));
+			String uriString = "mongodb://" + lovConfig.getProperty("MONGO_DB_USER_PASSWORD") + "@" + lovConfig.getProperty("MONGO_DB_HOST") + ":" + Integer.parseInt(lovConfig.getProperty("MONGO_DB_PORT")) + "/?authSource=admin";
+			MongoClientURI uri = new MongoClientURI(uriString);
+			MongoClient mongoClient = new MongoClient(uri);
+			@SuppressWarnings("deprecation")
+			Jongo jongo = new Jongo(mongoClient.getDB(dbName));
 			langCollection = jongo.getCollection("languages");
 			//trillos
 			pilotCollection = jongo.getCollection("pilots");
@@ -516,6 +519,8 @@ public class Mongo2RDF extends CmdGeneral {
 			gzipIt(filen3Prod);
 			
 			log.info("---Done---");
+			
+			mongoClient.close();
 			
 		} catch (UnknownHostException e){
 			log.error(e.getMessage());

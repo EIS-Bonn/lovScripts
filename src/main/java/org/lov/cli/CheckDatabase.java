@@ -25,7 +25,9 @@ import org.slf4j.LoggerFactory;
 import arq.cmdline.CmdGeneral;
 
 import com.hp.hpl.jena.shared.NotFoundException;
+import com.mongodb.DB;
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
 
 /**
  * A command line tool to check inconsistencies in the vocabularies database (like date issues or mention of object properties in LanguageIds)
@@ -85,7 +87,12 @@ public class CheckDatabase extends CmdGeneral {
 	protected void exec() {
 		try {
 			//bootstrap connection to MongoDB and create model
-			Jongo jongo = new Jongo(new MongoClient(hostName).getDB(dbName));
+			String uriString = "mongodb://" + lovConfig.getProperty("MONGO_DB_USER_PASSWORD") + "@" + lovConfig.getProperty("MONGO_DB_HOST") + ":" + Integer.parseInt(lovConfig.getProperty("MONGO_DB_PORT")) + "/?authSource=admin";
+			MongoClientURI uri = new MongoClientURI(uriString);
+			MongoClient mongoClient = new MongoClient(uri);
+			@SuppressWarnings("deprecation")
+			DB db = mongoClient.getDB(dbName);
+			Jongo jongo = new Jongo(db);
 			vocabCollection = jongo.getCollection("vocabularies");
 			
 			int cptErrorDate=0;
@@ -146,14 +153,13 @@ public class CheckDatabase extends CmdGeneral {
 			System.out.println("Number of Language Ids error:"+cptErrorLangId);
 			
 			log.info("---Done---");
+			mongoClient.close();
 			
-		} catch (UnknownHostException e){
-			cmdError(e.getMessage());
 		} catch (NotFoundException ex) {
 			cmdError("Not found: " + ex.getMessage());
 		} catch (LOVException ex) {
 			cmdError(ex.getMessage());
-		}
+		} 
 	}
 	
 	

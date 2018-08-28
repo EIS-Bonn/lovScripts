@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import arq.cmdline.CmdGeneral;
 
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
 
 /**
  * A command line tool that applies fixes to MongoDB.
@@ -37,7 +38,6 @@ public class MongoFix extends CmdGeneral {
 		new MongoFix(args).mainRun();
 	}
 
-	private String hostName;
 	private String dbName;
 	private Properties lovConfig;
 //	private MongoCollection langCollection;
@@ -68,16 +68,20 @@ public class MongoFix extends CmdGeneral {
 			File file = new File(configFilePath);
 			InputStream is = new FileInputStream(file);
 			lovConfig.load(is);
-			hostName= lovConfig.getProperty("MONGO_DB_HOST")+":"+lovConfig.getProperty("MONGO_DB_PORT");
+			String uriString = "mongodb://" + lovConfig.getProperty("MONGO_DB_USER_PASSWORD") + "@" + lovConfig.getProperty("MONGO_DB_HOST") + ":" + Integer.parseInt(lovConfig.getProperty("MONGO_DB_PORT")) + "/?authSource=admin";
+			MongoClientURI uri = new MongoClientURI(uriString);
+			MongoClient mongoClient = new MongoClient(uri);
+			
 			dbName = lovConfig.getProperty("MONGO_DB_INSTANCE");
 			
 			//bootstrap connection to MongoDB and create model
-			Jongo jongo = new Jongo(new MongoClient(hostName).getDB(dbName));
+			@SuppressWarnings("deprecation")
+			Jongo jongo = new Jongo(mongoClient.getDB(dbName));
 //			langCollection = jongo.getCollection("languages");
 //			agentCollection = jongo.getCollection("agents");
 			vocabCollection = jongo.getCollection("vocabularies");
 //			elementCollection = jongo.getCollection("elements");
-			
+			mongoClient.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

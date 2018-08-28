@@ -27,6 +27,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
 
 
 public class LovBotVocabAnalyser {
@@ -49,17 +50,20 @@ public class LovBotVocabAnalyser {
 	}
 	
 	private static VocabularySuggest analyse(String uriToAnalayse,String vocabURI, String vocabNsp, Lang lang, Properties lovConfig) throws Exception{
-			
-			MongoClient mongoClient = new MongoClient( lovConfig.getProperty("MONGO_DB_HOST") , Integer.parseInt(lovConfig.getProperty("MONGO_DB_PORT")) );
-			Jongo jongo = new Jongo(mongoClient.getDB( lovConfig.getProperty("MONGO_DB_INSTANCE") ));
-			//read from the URI and load it in a model
-			Model vocab;
-			if(lang!=null)vocab= RDFDataMgr.loadModel(uriToAnalayse,lang); //try to read from the URI and load it in a model
-			else vocab= RDFDataMgr.loadModel(uriToAnalayse);
-			
-			
-			VocabularySuggest result = new VocabularySuggest();
-			result.setNbTriplesWithoutInf(vocab.size());
+		
+		String uriString = "mongodb://" + lovConfig.getProperty("MONGO_DB_USER_PASSWORD") + "@" + lovConfig.getProperty("MONGO_DB_HOST") + ":" + Integer.parseInt(lovConfig.getProperty("MONGO_DB_PORT")) + "/?authSource=admin";
+		MongoClientURI uri = new MongoClientURI(uriString);
+		MongoClient mongoClient = new MongoClient(uri);
+		@SuppressWarnings("deprecation")
+		Jongo jongo = new Jongo(mongoClient.getDB( lovConfig.getProperty("MONGO_DB_INSTANCE") ));
+		//read from the URI and load it in a model
+		Model vocab;
+		if(lang!=null)vocab= RDFDataMgr.loadModel(uriToAnalayse,lang); //try to read from the URI and load it in a model
+		else vocab= RDFDataMgr.loadModel(uriToAnalayse);
+		
+		
+		VocabularySuggest result = new VocabularySuggest();
+		result.setNbTriplesWithoutInf(vocab.size());
 //			try {
 //				File outputFile = new File("C:/Users/vandenbusschep/Desktop/output.n3");
 //				if (outputFile.exists())outputFile.delete();
@@ -71,80 +75,80 @@ public class LovBotVocabAnalyser {
 //			} catch (IOException e) {
 //				e.printStackTrace();
 //			}
-			
-			//use RDFS inference
-			vocab = ModelFactory.createRDFSModel(vocab);
-			
-			//run queries over the vocabulary
-			SPARQLRunner sparqlRunner = new SPARQLRunner(vocab);
-						
-			/* Vocabulary terms */
-			List<Resource> classes = ((vocabNsp!=null)? //use namespace if we have it to filter out the element not member of that vocabulary
-					sparqlRunner.getURIs("list-classes-with-nsp.sparql", "nsp", ResourceFactory.createResource(vocabNsp), "class")
-					:sparqlRunner.getURIs("list-classes.sparql", null, null, "class"));
-			List<Resource> properties = ((vocabNsp!=null)? 
-					sparqlRunner.getURIs("list-properties-with-nsp.sparql", "nsp", ResourceFactory.createResource(vocabNsp), "property")
-					:sparqlRunner.getURIs("list-properties.sparql", null, null, "property"));
-			List<Resource> instances = ((vocabNsp!=null)?
-					sparqlRunner.getURIs("list-instances-with-nsp.sparql", "nsp", ResourceFactory.createResource(vocabNsp), "instance")
-					:sparqlRunner.getURIs("list-instances.sparql", null, null, "instance"));
-			List<Resource> datatypes = ((vocabNsp!=null)?
-					sparqlRunner.getURIs("list-datatypes-with-nsp.sparql", "nsp", ResourceFactory.createResource(vocabNsp), "datatype")
-					:sparqlRunner.getURIs("list-datatypes.sparql", null, null, "datatype"));
-			List<Resource> allTerms = new ArrayList<Resource>();
-			allTerms.addAll(classes);
-			allTerms.addAll(properties);
-			allTerms.addAll(instances);
-			allTerms.addAll(datatypes);
-			
-			//countVocabTerms(properties, nsp)
-			
-			/* URI, Namespace and prefixes */
-			String declaredUri = sparqlRunner.getURI("vocab-ontology-uri.sparql", "uri",null, null);
-			result.setUri(declaredUri);
-			result.setUriDeclared(declaredUri);
-			result.setUriInputSearch(uriToAnalayse);
-			result.setNspVannPref(sparqlRunner.getString("vocab-preferredNamespaceUri.sparql", "nsp","uri", (declaredUri!=null?ResourceFactory.createResource(declaredUri):ResourceFactory.createResource((vocabURI!=null)?vocabURI:uriToAnalayse))));
-			result.setNspDefault(vocab.getNsPrefixURI(""));
-			result.setNspClosest(getClosestNamespace(vocab.getNsPrefixMap(),(vocabURI!=null)?vocabURI:uriToAnalayse));
-			result.setNspMostUsed(getMostUsedNamespace(allTerms));
-			String nsp = result.getNspMostUsed(); // strategy to get the namespace: 1) most used one
-			if(nsp==null)nsp = result.getNspVannPref(); // 2) declared as vann preferred Namespace
-			if(nsp==null)nsp = result.getNspClosest(); // 3) the closest lexical value from the declared namespaces
-			if(nsp==null)nsp = result.getNspDefault(); // 4) the default namespace (without prefix)
-			result.setNsp(nsp);
-			result.setPrefixVannPref(sparqlRunner.getString("vocab-preferredNamespacePrefix.sparql", "nsp","uri", (declaredUri!=null?ResourceFactory.createResource(declaredUri):ResourceFactory.createResource((vocabURI!=null)?vocabURI:uriToAnalayse))));
-			result.setPrefixAssociatedNsp(vocab.getNsURIPrefix(nsp));
-			String prefix = result.getPrefixVannPref(); // strategy to get the prefix: 1) declared as vann preferred prefix
-			if(prefix==null)prefix= result.getPrefixAssociatedNsp(); // 2) the prefix associated to the namespace
-			result.setPrefix(prefix);
-			
-			result.setNbClasses((vocabNsp!=null)?classes.size() : countVocabTerms(classes,result.getNsp()));
-			result.setNbProperties((vocabNsp!=null)?properties.size() : countVocabTerms(properties,result.getNsp()));
-			result.setNbInstances((vocabNsp!=null)?instances.size() : countVocabTerms(instances,result.getNsp()));
-			result.setNbDatatypes((vocabNsp!=null)?datatypes.size() : countVocabTerms(datatypes,result.getNsp()));
-			
-			/* other metadata */ 
-			result.setLanguages(getlanguages(sparqlRunner.getLiterals("vocab-langs.sparql", "lang", null, null), jongo));
-			result.setDateModified(sparqlRunner.getString("vocab-modified.sparql", "modified","uri", ResourceFactory.createResource((vocabURI!=null)?vocabURI:uriToAnalayse)));
-			result.setDateIssued(sparqlRunner.getString("vocab-issued.sparql", "issued","uri", ResourceFactory.createResource((vocabURI!=null)?vocabURI:uriToAnalayse)));
-			result.setTitles(fromLiteralToLangValue(sparqlRunner.getLiterals("vocab-titles.sparql", "title", "uri", ResourceFactory.createResource((vocabURI!=null)?vocabURI:uriToAnalayse))));
-			result.setDescriptions(fromLiteralToLangValue(sparqlRunner.getLiterals("vocab-descriptions.sparql", "description", "uri", ResourceFactory.createResource((vocabURI!=null)?vocabURI:uriToAnalayse))));
-			result.setCreators(getAgents(sparqlRunner.getResultSet("vocab-creators.sparql", "uri", ResourceFactory.createResource((vocabURI!=null)?vocabURI:uriToAnalayse)),jongo));
-			result.setContributors(getAgents(sparqlRunner.getResultSet("vocab-contributors.sparql", "uri", ResourceFactory.createResource((vocabURI!=null)?vocabURI:uriToAnalayse)),jongo));
-			result.setPublishers(getAgents(sparqlRunner.getResultSet("vocab-publishers.sparql", "uri", ResourceFactory.createResource((vocabURI!=null)?vocabURI:uriToAnalayse)),jongo));
-			
-			/* VOAF relations */
-			result.setRelMetadata(getVocabularies(sparqlRunner.getURIs("vocab-rel-metadata.sparql", "nsp", ResourceFactory.createPlainLiteral((vocabNsp!=null)?vocabNsp : nsp), "elem"), jongo));
-			result.setRelSpecializes(getVocabularies(sparqlRunner.getURIs("vocab-rel-specializes.sparql", "nsp", ResourceFactory.createPlainLiteral((vocabNsp!=null)?vocabNsp : nsp), "elem"), jongo));
-			result.setRelGeneralizes(getVocabularies(sparqlRunner.getURIs("vocab-rel-generalizes.sparql", "nsp", ResourceFactory.createPlainLiteral((vocabNsp!=null)?vocabNsp : nsp), "elem"), jongo));
-			result.setRelExtends(getVocabularies(sparqlRunner.getURIs("vocab-rel-extends.sparql", "nsp", ResourceFactory.createPlainLiteral((vocabNsp!=null)?vocabNsp : nsp), "elem"), jongo));
-			result.setRelEquivalent(getVocabularies(sparqlRunner.getURIs("vocab-rel-equiv.sparql", "nsp", ResourceFactory.createPlainLiteral((vocabNsp!=null)?vocabNsp : nsp), "elem"), jongo));
-			result.setRelDisjunc(getVocabularies(sparqlRunner.getURIs("vocab-rel-disj.sparql", "nsp", ResourceFactory.createPlainLiteral((vocabNsp!=null)?vocabNsp : nsp), "elem"), jongo));
-			result.setRelImports(getVocabularies(sparqlRunner.getURIs("vocab-rel-imports.sparql", "uri", ResourceFactory.createResource((vocabURI!=null)?vocabURI:uriToAnalayse), "relVocab"), jongo));
-			
-			
-			return result;
+		
+		//use RDFS inference
+		vocab = ModelFactory.createRDFSModel(vocab);
+		
+		//run queries over the vocabulary
+		SPARQLRunner sparqlRunner = new SPARQLRunner(vocab);
+					
+		/* Vocabulary terms */
+		List<Resource> classes = ((vocabNsp!=null)? //use namespace if we have it to filter out the element not member of that vocabulary
+				sparqlRunner.getURIs("list-classes-with-nsp.sparql", "nsp", ResourceFactory.createResource(vocabNsp), "class")
+				:sparqlRunner.getURIs("list-classes.sparql", null, null, "class"));
+		List<Resource> properties = ((vocabNsp!=null)? 
+				sparqlRunner.getURIs("list-properties-with-nsp.sparql", "nsp", ResourceFactory.createResource(vocabNsp), "property")
+				:sparqlRunner.getURIs("list-properties.sparql", null, null, "property"));
+		List<Resource> instances = ((vocabNsp!=null)?
+				sparqlRunner.getURIs("list-instances-with-nsp.sparql", "nsp", ResourceFactory.createResource(vocabNsp), "instance")
+				:sparqlRunner.getURIs("list-instances.sparql", null, null, "instance"));
+		List<Resource> datatypes = ((vocabNsp!=null)?
+				sparqlRunner.getURIs("list-datatypes-with-nsp.sparql", "nsp", ResourceFactory.createResource(vocabNsp), "datatype")
+				:sparqlRunner.getURIs("list-datatypes.sparql", null, null, "datatype"));
+		List<Resource> allTerms = new ArrayList<Resource>();
+		allTerms.addAll(classes);
+		allTerms.addAll(properties);
+		allTerms.addAll(instances);
+		allTerms.addAll(datatypes);
+		
+		//countVocabTerms(properties, nsp)
+		
+		/* URI, Namespace and prefixes */
+		String declaredUri = sparqlRunner.getURI("vocab-ontology-uri.sparql", "uri",null, null);
+		result.setUri(declaredUri);
+		result.setUriDeclared(declaredUri);
+		result.setUriInputSearch(uriToAnalayse);
+		result.setNspVannPref(sparqlRunner.getString("vocab-preferredNamespaceUri.sparql", "nsp","uri", (declaredUri!=null?ResourceFactory.createResource(declaredUri):ResourceFactory.createResource((vocabURI!=null)?vocabURI:uriToAnalayse))));
+		result.setNspDefault(vocab.getNsPrefixURI(""));
+		result.setNspClosest(getClosestNamespace(vocab.getNsPrefixMap(),(vocabURI!=null)?vocabURI:uriToAnalayse));
+		result.setNspMostUsed(getMostUsedNamespace(allTerms));
+		String nsp = result.getNspMostUsed(); // strategy to get the namespace: 1) most used one
+		if(nsp==null)nsp = result.getNspVannPref(); // 2) declared as vann preferred Namespace
+		if(nsp==null)nsp = result.getNspClosest(); // 3) the closest lexical value from the declared namespaces
+		if(nsp==null)nsp = result.getNspDefault(); // 4) the default namespace (without prefix)
+		result.setNsp(nsp);
+		result.setPrefixVannPref(sparqlRunner.getString("vocab-preferredNamespacePrefix.sparql", "nsp","uri", (declaredUri!=null?ResourceFactory.createResource(declaredUri):ResourceFactory.createResource((vocabURI!=null)?vocabURI:uriToAnalayse))));
+		result.setPrefixAssociatedNsp(vocab.getNsURIPrefix(nsp));
+		String prefix = result.getPrefixVannPref(); // strategy to get the prefix: 1) declared as vann preferred prefix
+		if(prefix==null)prefix= result.getPrefixAssociatedNsp(); // 2) the prefix associated to the namespace
+		result.setPrefix(prefix);
+		
+		result.setNbClasses((vocabNsp!=null)?classes.size() : countVocabTerms(classes,result.getNsp()));
+		result.setNbProperties((vocabNsp!=null)?properties.size() : countVocabTerms(properties,result.getNsp()));
+		result.setNbInstances((vocabNsp!=null)?instances.size() : countVocabTerms(instances,result.getNsp()));
+		result.setNbDatatypes((vocabNsp!=null)?datatypes.size() : countVocabTerms(datatypes,result.getNsp()));
+		
+		/* other metadata */ 
+		result.setLanguages(getlanguages(sparqlRunner.getLiterals("vocab-langs.sparql", "lang", null, null), jongo));
+		result.setDateModified(sparqlRunner.getString("vocab-modified.sparql", "modified","uri", ResourceFactory.createResource((vocabURI!=null)?vocabURI:uriToAnalayse)));
+		result.setDateIssued(sparqlRunner.getString("vocab-issued.sparql", "issued","uri", ResourceFactory.createResource((vocabURI!=null)?vocabURI:uriToAnalayse)));
+		result.setTitles(fromLiteralToLangValue(sparqlRunner.getLiterals("vocab-titles.sparql", "title", "uri", ResourceFactory.createResource((vocabURI!=null)?vocabURI:uriToAnalayse))));
+		result.setDescriptions(fromLiteralToLangValue(sparqlRunner.getLiterals("vocab-descriptions.sparql", "description", "uri", ResourceFactory.createResource((vocabURI!=null)?vocabURI:uriToAnalayse))));
+		result.setCreators(getAgents(sparqlRunner.getResultSet("vocab-creators.sparql", "uri", ResourceFactory.createResource((vocabURI!=null)?vocabURI:uriToAnalayse)),jongo));
+		result.setContributors(getAgents(sparqlRunner.getResultSet("vocab-contributors.sparql", "uri", ResourceFactory.createResource((vocabURI!=null)?vocabURI:uriToAnalayse)),jongo));
+		result.setPublishers(getAgents(sparqlRunner.getResultSet("vocab-publishers.sparql", "uri", ResourceFactory.createResource((vocabURI!=null)?vocabURI:uriToAnalayse)),jongo));
+		
+		/* VOAF relations */
+		result.setRelMetadata(getVocabularies(sparqlRunner.getURIs("vocab-rel-metadata.sparql", "nsp", ResourceFactory.createPlainLiteral((vocabNsp!=null)?vocabNsp : nsp), "elem"), jongo));
+		result.setRelSpecializes(getVocabularies(sparqlRunner.getURIs("vocab-rel-specializes.sparql", "nsp", ResourceFactory.createPlainLiteral((vocabNsp!=null)?vocabNsp : nsp), "elem"), jongo));
+		result.setRelGeneralizes(getVocabularies(sparqlRunner.getURIs("vocab-rel-generalizes.sparql", "nsp", ResourceFactory.createPlainLiteral((vocabNsp!=null)?vocabNsp : nsp), "elem"), jongo));
+		result.setRelExtends(getVocabularies(sparqlRunner.getURIs("vocab-rel-extends.sparql", "nsp", ResourceFactory.createPlainLiteral((vocabNsp!=null)?vocabNsp : nsp), "elem"), jongo));
+		result.setRelEquivalent(getVocabularies(sparqlRunner.getURIs("vocab-rel-equiv.sparql", "nsp", ResourceFactory.createPlainLiteral((vocabNsp!=null)?vocabNsp : nsp), "elem"), jongo));
+		result.setRelDisjunc(getVocabularies(sparqlRunner.getURIs("vocab-rel-disj.sparql", "nsp", ResourceFactory.createPlainLiteral((vocabNsp!=null)?vocabNsp : nsp), "elem"), jongo));
+		result.setRelImports(getVocabularies(sparqlRunner.getURIs("vocab-rel-imports.sparql", "uri", ResourceFactory.createResource((vocabURI!=null)?vocabURI:uriToAnalayse), "relVocab"), jongo));
+		
+		mongoClient.close();
+		return result;
 	}
 	
 	

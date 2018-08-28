@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import arq.cmdline.CmdGeneral;
 
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
 
 
 /**
@@ -31,7 +32,6 @@ import com.mongodb.MongoClient;
 public class StatsOneVocab extends CmdGeneral {
 	private final static Logger log = LoggerFactory.getLogger(StatsOneVocab.class);
 	
-	private String hostName;
 	private String dbName;
 	private String vocabularyURI;
 	private static MongoCollection vocabCollection;
@@ -63,6 +63,7 @@ public class StatsOneVocab extends CmdGeneral {
 		return getCommandName() + "vocabularyURI";
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void processModulesAndArgs() {
 		//jtrillos
@@ -80,11 +81,13 @@ public class StatsOneVocab extends CmdGeneral {
 			File file = new File(configFilePath);
 			InputStream is = new FileInputStream(file);
 			lovConfig.load(is);
-			hostName= lovConfig.getProperty("MONGO_DB_HOST")+":"+lovConfig.getProperty("MONGO_DB_PORT");
+			String uriString = "mongodb://" + lovConfig.getProperty("MONGO_DB_USER_PASSWORD") + "@" + lovConfig.getProperty("MONGO_DB_HOST") + ":" + Integer.parseInt(lovConfig.getProperty("MONGO_DB_PORT")) + "/?authSource=admin";
+			MongoClientURI uri = new MongoClientURI(uriString);
+			MongoClient mongoClient = new MongoClient(uri);
 			dbName = lovConfig.getProperty("MONGO_DB_INSTANCE");
-			jongo = new Jongo(new MongoClient(hostName).getDB(dbName));
+			jongo = new Jongo(mongoClient.getDB(dbName));
 			vocabCollection = jongo.getCollection("vocabularies");
-			
+			mongoClient.close();
 		} catch (FileNotFoundException e) {
 			log.error(e.getMessage());
 		} catch (IOException e) {

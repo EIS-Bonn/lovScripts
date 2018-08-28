@@ -37,6 +37,7 @@ import arq.cmdline.CmdGeneral;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
 
 
 //TODO check DNS Validity
@@ -94,7 +95,10 @@ public class Aggregator extends CmdGeneral {
 			
 			/* get the list of vocabs (URI and isDefinedBy) and their last version file */
 			//get the connection to mongodb and its vocabularies collection
-			MongoClient mongoClient = new MongoClient( lovConfig.getProperty("MONGO_DB_HOST") , Integer.parseInt(lovConfig.getProperty("MONGO_DB_PORT")) );
+			String uriString = "mongodb://" + lovConfig.getProperty("MONGO_DB_USER_PASSWORD") + "@" + lovConfig.getProperty("MONGO_DB_HOST") + ":" + Integer.parseInt(lovConfig.getProperty("MONGO_DB_PORT")) + "/?authSource=admin";
+			MongoClientURI uri = new MongoClientURI(uriString);
+			MongoClient mongoClient = new MongoClient(uri);
+			@SuppressWarnings("deprecation")
 			Jongo jongo = new Jongo(mongoClient.getDB( lovConfig.getProperty("MONGO_DB_INSTANCE") ));
 			vocabCollection = jongo.getCollection("vocabularies");
 			MongoCursor<Vocabulary> vocabs = vocabCollection.find().sort("{prefix:1}").as(Vocabulary.class);
@@ -128,6 +132,7 @@ public class Aggregator extends CmdGeneral {
 			log.info( (agents.size()-cptRetrieved)+" vocabulary in error");
 			log.info(cptUpdated+" vocabulary updated");
 			log.info("####### </Aggregator> #######");
+			mongoClient.close();
 		} catch (FileNotFoundException e) {
 			cmdError("Not found: " + e.getMessage());
 			e.printStackTrace();

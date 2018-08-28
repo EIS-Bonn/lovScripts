@@ -32,8 +32,8 @@ import arq.cmdline.CmdGeneral;
 
 import com.hp.hpl.jena.shared.NotFoundException;
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
 
-import org.lov.objects.*;
 
 /**
  * A command line tool that output inline the number of vocabularies per week based on the archives analysis.
@@ -45,7 +45,6 @@ public class ComputeLOVWeekEvolDesc extends CmdGeneral {
 	private final static SimpleDateFormat formatLatex = new SimpleDateFormat("yyyy-MM-dd");
 	
 	private Calendar startingDate;
-	private String hostName;
 	private String dbName;
 	private Properties lovConfig;
 	
@@ -84,7 +83,6 @@ public class ComputeLOVWeekEvolDesc extends CmdGeneral {
 			File file = new File(configFilePath);
 			InputStream is = new FileInputStream(file);
 			lovConfig.load(is);
-			hostName= lovConfig.getProperty("MONGO_DB_HOST")+":"+lovConfig.getProperty("MONGO_DB_PORT");
 			dbName = lovConfig.getProperty("MONGO_DB_INSTANCE");
 			
 		} catch (FileNotFoundException e) {
@@ -107,7 +105,11 @@ public class ComputeLOVWeekEvolDesc extends CmdGeneral {
 			//sendPost(namespace);
 						
 			//bootstrap connection to MongoDB and create model
-			Jongo jongo = new Jongo(new MongoClient(hostName).getDB(dbName));
+			String uriString = "mongodb://" + lovConfig.getProperty("MONGO_DB_USER_PASSWORD") + "@" + lovConfig.getProperty("MONGO_DB_HOST") + ":" + Integer.parseInt(lovConfig.getProperty("MONGO_DB_PORT")) + "/?authSource=admin";
+			MongoClientURI uri = new MongoClientURI(uriString);
+			MongoClient mongoClient = new MongoClient(uri);
+			@SuppressWarnings("deprecation")
+			Jongo jongo = new Jongo(mongoClient.getDB(dbName));
 			MongoCollection vocabCollection = jongo.getCollection("vocabularies");
 			MongoCollection langCollection = jongo.getCollection("languages");
 			
@@ -121,6 +123,7 @@ public class ComputeLOVWeekEvolDesc extends CmdGeneral {
 			computeVoafRel(vocabCollection);
 			
 			log.info("Done!");
+			mongoClient.close();
 		} catch (NotFoundException ex) {
 			cmdError("Not found: " + ex.getMessage());
 		} catch (Exception ex) {
