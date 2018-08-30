@@ -18,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
+import org.apache.log4j.LogManager;
 import org.lov.LovAggregatorAgent;
 import org.lov.objects.Vocabulary;
 import org.slf4j.Logger;
@@ -79,6 +80,7 @@ public class DownloadVersion extends CmdGeneral {
 
 	@Override
 	protected void exec() {
+		LogManager.getLogger("org.mongodb").setLevel(org.apache.log4j.Level.OFF);
 		try {
 			//
 			Vocabulary vocab = new Vocabulary();

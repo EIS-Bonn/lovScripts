@@ -37,7 +37,7 @@ public class LovBotVocabAnalyser {
 	 * This function analyse a vocabulary version using previous vocabulary information
 	 **/
 	public static VocabularySuggest analyseVersion(String vocabularyversionURL, String vocabularyURI, String vocabularyNsp, Lang lang, Properties lovConfig) throws Exception{
-		log.info("LOV BOT is analysing the version file : " + vocabularyversionURL);
+		//log.info("LOV BOT is analysing the version file : " + vocabularyversionURL);
 		return analyse(vocabularyversionURL, vocabularyURI, vocabularyNsp, lang, lovConfig);
 	}
 	
