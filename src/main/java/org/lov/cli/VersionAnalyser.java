@@ -60,15 +60,12 @@ public class VersionAnalyser extends CmdGeneral {
 
 	@Override
 	protected void processModulesAndArgs() {
-		/*if (getPositional().size() < 3) {
+		if (getPositional().size() < 3) {
 			doHelp();
 		}
 		versionURI = getPositionalArg(0);
 		vocabularyURI = getPositionalArg(1);
-		vocabularyNsp = getPositionalArg(2);*/
-		versionURI = "http://localhost:3333/dataset/bdo/vocabs/gemet/versions/2018-08-13.n3";
-		vocabularyURI = "http://www.eionet.europa.eu/gemet/exports/latest/gemet-skoscore.rdf";
-		vocabularyNsp = "http://www.w3.org/2004/02/skos/core#";
+		vocabularyNsp = getPositionalArg(2);
 		try {
 			lovConfig = new Properties();
 			//jtrillos
