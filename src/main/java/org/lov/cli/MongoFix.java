@@ -81,7 +81,7 @@ public class MongoFix extends CmdGeneral {
 //			agentCollection = jongo.getCollection("agents");
 			vocabCollection = jongo.getCollection("vocabularies");
 //			elementCollection = jongo.getCollection("elements");
-			mongoClient.close();
+			//mongoClient.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

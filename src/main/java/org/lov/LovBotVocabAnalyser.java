@@ -147,7 +147,7 @@ public class LovBotVocabAnalyser {
 		result.setRelDisjunc(getVocabularies(sparqlRunner.getURIs("vocab-rel-disj.sparql", "nsp", ResourceFactory.createPlainLiteral((vocabNsp!=null)?vocabNsp : nsp), "elem"), jongo));
 		result.setRelImports(getVocabularies(sparqlRunner.getURIs("vocab-rel-imports.sparql", "uri", ResourceFactory.createResource((vocabURI!=null)?vocabURI:uriToAnalayse), "relVocab"), jongo));
 		
-		mongoClient.close();
+		//mongoClient.close();
 		return result;
 	}
 	

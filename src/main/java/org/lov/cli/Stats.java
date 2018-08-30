@@ -93,7 +93,7 @@ public class Stats extends CmdGeneral {
 			tagCollection = jongo.getCollection("stattags");
 			pilotCollection = jongo.getCollection("pilots");
 			
-			mongoClient.close();
+			//mongoClient.close();
 		} catch (FileNotFoundException e) {
 			log.error(e.getMessage());
 		} catch (IOException e) {

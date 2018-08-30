@@ -153,7 +153,7 @@ public class CheckDatabase extends CmdGeneral {
 			System.out.println("Number of Language Ids error:"+cptErrorLangId);
 			
 			log.info("---Done---");
-			mongoClient.close();
+			//mongoClient.close();
 			
 		} catch (NotFoundException ex) {
 			cmdError("Not found: " + ex.getMessage());

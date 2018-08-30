@@ -123,7 +123,7 @@ public class ComputeLOVWeekEvolDesc extends CmdGeneral {
 			computeVoafRel(vocabCollection);
 			
 			log.info("Done!");
-			mongoClient.close();
+			//mongoClient.close();
 		} catch (NotFoundException ex) {
 			cmdError("Not found: " + ex.getMessage());
 		} catch (Exception ex) {

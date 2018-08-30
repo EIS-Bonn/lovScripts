@@ -87,7 +87,7 @@ public class StatsOneVocab extends CmdGeneral {
 			dbName = lovConfig.getProperty("MONGO_DB_INSTANCE");
 			jongo = new Jongo(mongoClient.getDB(dbName));
 			vocabCollection = jongo.getCollection("vocabularies");
-			mongoClient.close();
+			//mongoClient.close();
 		} catch (FileNotFoundException e) {
 			log.error(e.getMessage());
 		} catch (IOException e) {

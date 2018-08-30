@@ -132,7 +132,7 @@ public class Aggregator extends CmdGeneral {
 			log.info( (agents.size()-cptRetrieved)+" vocabulary in error");
 			log.info(cptUpdated+" vocabulary updated");
 			log.info("####### </Aggregator> #######");
-			mongoClient.close();
+			//mongoClient.close();
 		} catch (FileNotFoundException e) {
 			cmdError("Not found: " + e.getMessage());
 			e.printStackTrace();

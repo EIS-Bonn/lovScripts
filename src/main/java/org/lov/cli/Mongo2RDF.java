@@ -520,7 +520,7 @@ public class Mongo2RDF extends CmdGeneral {
 			
 			log.info("---Done---");
 			
-			mongoClient.close();
+			//mongoClient.close();
 			
 		} catch (UnknownHostException e){
 			log.error(e.getMessage());
