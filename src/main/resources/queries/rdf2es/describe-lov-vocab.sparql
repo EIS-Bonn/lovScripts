@@ -16,7 +16,7 @@ PREFIX vann: <http://purl.org/vocab/vann/>
 SELECT ?prefix ?title ?description ?homepage {
 
   # Check only the LOV metadata graph
-  GRAPH <http://212.101.173.21:3333/dataset/bdo> {
+  GRAPH <http://localhost:3333/dataset/bdo> {
     ?vocab a voaf:Vocabulary .
     ?vocab vann:preferredNamespacePrefix ?prefix .
 

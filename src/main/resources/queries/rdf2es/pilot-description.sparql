@@ -1,10 +1,10 @@
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX lov:  <http://212.101.173.21:3333/dataset/bdo/>
+PREFIX lov:  <http://localhost:3333/dataset/bdo/>
 
 # Get AltUris (owl:sameAs) for one agent
 SELECT DISTINCT ?comment {
   # Check only the LOV metadata graph
-  GRAPH <http://212.101.173.21:3333/dataset/bdo> {
+  GRAPH <http://localhost:3333/dataset/bdo> {
   	?pilot a lov:pilot.
     ?pilot rdfs:comment ?comment.
   }
